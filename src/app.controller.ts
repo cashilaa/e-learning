@@ -1,11 +1,24 @@
-import { Controller, Get, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Req, Body } from '@nestjs/common';
 import { AppService } from './app.service';
-import { AuthGuard } from '@nestjs/passport'
+import { AuthGuard } from '@nestjs/passport';
+
+// Add interface for login data
+interface LoginDto {
+  email: string;
+  password: string;
+}
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
+  // Add the new student login endpoint
+  @Post('api/auth/signin/student')
+  async studentLogin(@Body() loginData: LoginDto) {
+    return this.appService.login(loginData, 'student');
+  }
+
+  // Existing Google auth routes
   @Get()
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req) { }
